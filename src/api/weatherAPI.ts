@@ -1,10 +1,20 @@
 // src/api/weatherAPI.ts
 import axios from 'axios';
 
-const API_KEY = '14f8fd92c249981fa1f05b4e53fe6214';
-const BASE_URL = 'https://api.openweathermap.org/data/2.5/';
+const API_KEY = import.meta.env.VITE_API_KEY;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const fetchWeather = async (city: string) => {
-  const response = await axios.get(`${BASE_URL}?q=${city}&units=metric&appid=${API_KEY}`);
-  return response.data;
+  // Step 1: Get current weather data
+  const currentResponse = await axios.get(`${BASE_URL}weather?q=${city}&units=metric&appid=${API_KEY}`);
+  const currentData = currentResponse.data;
+
+  // Step 2: Get 5-day / 3-hour forecast data
+  const forecastResponse = await axios.get(`${BASE_URL}forecast?q=${city}&units=metric&appid=${API_KEY}`);
+  const forecastData = forecastResponse.data;
+
+  return {
+    ...currentData,
+    forecast: forecastData.list, // add forecast as a separate property
+  };
 };
