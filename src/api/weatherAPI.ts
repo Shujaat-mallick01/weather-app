@@ -1,20 +1,69 @@
-// src/api/weatherAPI.ts
-import axios from 'axios';
-
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
+const MAP_BASE_URL = import.meta.env.VITE_MAP_BASE_URL;
 
-export const fetchWeather = async (city: string) => {
-  // Step 1: Get current weather data
-  const currentResponse = await axios.get(`${BASE_URL}weather?q=${city}&units=metric&appid=${API_KEY}`);
-  const currentData = currentResponse.data;
+export const weatherAPI = {
+  getCurrentWeather: async (city: string) => {
+    const response = await fetch(
+      `${BASE_URL}weather?q=${city}&appid=${API_KEY}&units=metric`
+    );
+    if (!response.ok) throw new Error('Weather data not found');
+    return response.json();
+  },
 
-  // Step 2: Get 5-day / 3-hour forecast data
-  const forecastResponse = await axios.get(`${BASE_URL}forecast?q=${city}&units=metric&appid=${API_KEY}`);
-  const forecastData = forecastResponse.data;
+  getForecast: async (city: string) => {
+    const response = await fetch(
+      `${BASE_URL}forecast?q=${city}&appid=${API_KEY}&units=metric`
+    );
+    if (!response.ok) throw new Error('Forecast data not found');
+    return response.json();
+  },
 
-  return {
-    ...currentData,
-    forecast: forecastData.list, // add forecast as a separate property
-  };
+  getWeatherByCoords: async (lat: number, lon: number) => {
+    const response = await fetch(
+      `${BASE_URL}weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+    );
+    if (!response.ok) throw new Error('Weather data not found');
+    return response.json();
+  },
+
+  getForecastByCoords: async (lat: number, lon: number) => {
+    const response = await fetch(
+      `${BASE_URL}forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+    );
+    if (!response.ok) throw new Error('Forecast data not found');
+    return response.json();
+  },
+
+  getAirQuality: async (lat: number, lon: number) => {
+    const response = await fetch(
+      `${BASE_URL}air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+    );
+    if (!response.ok) throw new Error('Air quality data not found');
+    return response.json();
+  },
+
+  getUVIndex: async (lat: number, lon: number) => {
+    const response = await fetch(
+      `${BASE_URL}uvi?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+    );
+    if (!response.ok) throw new Error('UV index data not found');
+    return response.json();
+  },
+
+  // Map tile URLs
+  getMapTileUrl: (layer: string, z: number, x: number, y: number) => {
+    return `${MAP_BASE_URL}${layer}/${z}/${x}/${y}.png?appid=${API_KEY}`;
+  },
 };
+
+// Map layer types
+export const MAP_LAYERS = {
+  PRECIPITATION: 'precipitation_new',
+  CLOUDS: 'clouds_new',
+  TEMPERATURE: 'temp_new',
+  WIND: 'wind_new',
+  PRESSURE: 'pressure_new',
+} as const;
+
+export type MapLayerType = typeof MAP_LAYERS[keyof typeof MAP_LAYERS];

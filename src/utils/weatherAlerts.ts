@@ -1,66 +1,42 @@
-// src/utils/weatherAlerts.ts
-import type { WeatherState } from '../types/weather';
+import { WeatherAlert } from '../types/weather';
 
-export const getWeatherAlerts = (data: WeatherState['data']) => {
-  const alerts: Array<{
-    type: string;
-    level: 'warning' | 'caution';
-    message: string;
-    icon: string;
-  }> = [];
+export const weatherAlerts = {
+  getAlertsForLocation: (location: string): WeatherAlert[] => {
+    // Mock alerts for demonstration
+    // In production, this would fetch from a real API
+    const mockAlerts: WeatherAlert[] = [
+      {
+        id: '1',
+        title: 'Heat Advisory',
+        description: 'Temperatures expected to reach 38°C. Stay hydrated and avoid prolonged outdoor activities.',
+        severity: 'moderate',
+        issued: new Date().toLocaleString(),
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleString(),
+      },
+    ];
 
-  if (!data) {
-    return alerts; // Return empty array if data is null
-  }
+    // Randomly return alerts for demonstration
+    return Math.random() > 0.5 ? mockAlerts : [];
+  },
 
-  // Temperature alerts
-  if (data.main?.temp && data.main.temp > 35) {
-    alerts.push({
-      type: 'heat',
-      level: 'warning',
-      message: 'High temperature warning - Stay hydrated and avoid prolonged sun exposure',
-      icon: '🌡️',
+  formatAlertTime: (timestamp: string): string => {
+    return new Date(timestamp).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
     });
-  }
+  },
 
-  if (data.main?.temp && data.main.temp < 0) {
-    alerts.push({
-      type: 'cold',
-      level: 'warning',
-      message: 'Freezing temperature - Dress warmly and protect exposed skin',
-      icon: '🥶',
-    });
-  }
-
-  // Wind alerts
-  if (data.wind?.speed && data.wind.speed > 10) {
-    alerts.push({
-      type: 'wind',
-      level: 'caution',
-      message: 'Strong winds expected - Secure outdoor items',
-      icon: '💨',
-    });
-  }
-
-  // Rain alerts
-  if (data.rain && data.rain['1h'] && data.rain['1h'] > 5) {
-    alerts.push({
-      type: 'rain',
-      level: 'caution',
-      message: 'Heavy rainfall - Consider indoor activities',
-      icon: '🌧️',
-    });
-  }
-
-  // Visibility alerts
-  if (data.visibility && data.visibility < 1000) {
-    alerts.push({
-      type: 'visibility',
-      level: 'warning',
-      message: 'Poor visibility conditions - Drive carefully',
-      icon: '🌫️',
-    });
-  }
-
-  return alerts;
+  getAlertIcon: (severity: string) => {
+    switch (severity) {
+      case 'severe':
+        return '🚨';
+      case 'moderate':
+        return '⚠️';
+      default:
+        return 'ℹ️';
+    }
+  },
 };

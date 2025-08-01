@@ -1,76 +1,72 @@
-// src/components/WeatherMap.tsx
-import { useState } from 'react';
-import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import type { WeatherMapProps } from '../../../types/weather';
+import React, { useState } from 'react';
+import { Map, Layers, CloudRain, Thermometer, Wind } from 'lucide-react';
 
-const WeatherMap: React.FC<WeatherMapProps> = ({ lat, lon, layer, onLayerChange }) => {
-  const [mapError, setMapError] = useState(false);
+const WeatherMap: React.FC = () => {
+  const [mapLayer, setMapLayer] = useState('precipitation');
 
-  const API_KEY = import.meta.env.VITE_API_KEY;
-  const MAP_BASE_URL = import.meta.env.VITE_MAP_BASE_URL;
-
-  const handleMapError = () => {
-    setMapError(true);
-  };
-
-  const tileUrl = `${MAP_BASE_URL}${layer}/{z}/{x}/{y}.png?appid=${API_KEY}&opacity=0.5`;
+  const layers = [
+    { id: 'precipitation', name: 'Precipitation', icon: CloudRain },
+    { id: 'temperature', name: 'Temperature', icon: Thermometer },
+    { id: 'wind', name: 'Wind', icon: Wind },
+    { id: 'clouds', name: 'Clouds', icon: Layers },
+  ];
 
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20">
-      <div className="mb-4 flex justify-between items-center">
-        <h3 className="text-white text-lg font-semibold">Weather Radar</h3>
-        <div className="flex gap-2">
-          {['clouds_new', 'precipitation_new', 'pressure_new', 'wind_new', 'temp_new'].map((layerType) => (
-            <button
-              key={layerType}
-              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
-                layer === layerType ? 'bg-blue-500 text-white' : 'bg-white/20 text-white/70 hover:bg-white/30'
-              }`}
-              onClick={() => onLayerChange(layerType)}
-              aria-label={`Switch to ${layerType.replace('_new', '')} layer`}
-            >
-              {layerType.replace('_new', '').charAt(0).toUpperCase() + layerType.replace('_new', '').slice(1)}
-            </button>
-          ))}
+    <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 shadow-2xl">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-2">
+          <Map className="w-6 h-6 text-blue-400" />
+          <h3 className="text-2xl font-bold text-white">Weather Map</h3>
+        </div>
+
+        {/* Layer selector */}
+        <div className="flex space-x-2">
+          {layers.map((layer) => {
+            const Icon = layer.icon;
+            return (
+              <button
+                key={layer.id}
+                onClick={() => setMapLayer(layer.id)}
+                className={`px-3 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 ${
+                  mapLayer === layer.id
+                    ? 'bg-white/20 text-white'
+                    : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span className="text-sm font-medium">{layer.name}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="relative h-64 rounded-xl overflow-hidden bg-slate-800/50">
-        {!mapError ? (
-          <MapContainer
-            center={[lat, lon]}
-            zoom={8}
-            style={{ height: '100%', width: '100%' }}
-            zoomControl={false}
-          >
-            <TileLayer
-              url={tileUrl}
-              attribution='&copy; <a href="https://openweathermap.org">OpenWeatherMap</a>'
-              eventHandlers={{ error: handleMapError }}
-            />
-            <ZoomControl position="bottomright" />
-          </MapContainer>
-        ) : (
-          <div className="flex items-center justify-center h-full text-white/70">
-            <div className="text-center">
-              <svg
-                className="w-12 h-12 mx-auto mb-2 text-white/50"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7"
-                />
-              </svg>
-              <p>Map temporarily unavailable</p>
-            </div>
+      {/* Map placeholder */}
+      <div className="relative h-96 bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center">
+            <Map className="w-16 h-16 text-white/30 mx-auto mb-4" />
+            <p className="text-white/50">Interactive weather map</p>
+            <p className="text-white/30 text-sm mt-2">
+              Integrate with OpenWeatherMap layers API
+            </p>
           </div>
-        )}
+        </div>
+      </div>
+
+      {/* Map controls */}
+      <div className="mt-4 flex justify-between items-center">
+        <div className="flex space-x-2">
+          <button className="p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+            <span className="text-white/60">+</span>
+          </button>
+          <button className="p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+            <span className="text-white/60">-</span>
+          </button>
+        </div>
+        <p className="text-white/50 text-sm">
+          Layer: {layers.find(l => l.id === mapLayer)?.name}
+        </p>
       </div>
     </div>
   );
