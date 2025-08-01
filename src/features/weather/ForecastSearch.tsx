@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../app/store';
-import { fetchWeatherByCity, addRecentSearch } from './WeatherSlice';
+import { fetchWeatherByCity, fetchWeatherByCoords, addRecentSearch } from './WeatherSlice';
 import { Search, MapPin, Clock } from 'lucide-react';
 
 const ForecastSearch: React.FC = () => {

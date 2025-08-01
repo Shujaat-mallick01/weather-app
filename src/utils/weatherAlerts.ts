@@ -1,9 +1,10 @@
 import { WeatherAlert } from '../types/weather';
 
 export const weatherAlerts = {
-  getAlertsForLocation: (location: string): WeatherAlert[] => {
+  getAlertsForLocation: (_location: string): WeatherAlert[] => {
     // Mock alerts for demonstration
     // In production, this would fetch from a real API
+    // The location parameter will be used when implementing real API calls
     const mockAlerts: WeatherAlert[] = [
       {
         id: '1',

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { weatherAPI } from '../../api/weatherAPI';
-import { WeatherData, ForecastData, WeatherState } from '../../types/weather';
+import { WeatherState } from '../../types/weather';
 import { parseForecastData } from '../../utils/weatherUtils';
 
 const initialState: WeatherState = {

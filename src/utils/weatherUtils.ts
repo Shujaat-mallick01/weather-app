@@ -1,4 +1,4 @@
-import { ForecastData, HourlyForecastData } from '../types/weather';
+import { ForecastData } from '../types/weather';
 
 export const formatTime = (timestamp: number): string => {
   return new Date(timestamp * 1000).toLocaleTimeString('en-US', {
