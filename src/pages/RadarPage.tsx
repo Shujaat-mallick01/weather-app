@@ -27,7 +27,7 @@ const RadarPage: React.FC = () => {
         {/* Radar Display */}
         <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 mb-8">
           {/* Radar Type Selector */}
-          <div className="flex justify-center space-x-4 mb-6">
+          <div className="flex justify-center space-x-4 mb-6 gap-4 flex-wrap">
             {radarTypes.map((type) => {
               const Icon = type.icon;
               return (

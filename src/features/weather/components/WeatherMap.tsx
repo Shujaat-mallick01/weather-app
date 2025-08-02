@@ -13,14 +13,14 @@ const WeatherMap: React.FC = () => {
 
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 shadow-2xl">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-2">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+        <div className="flex items-center space-x-2 flex-wrap">
           <Map className="w-6 h-6 text-blue-400" />
           <h3 className="text-2xl font-bold text-white">Weather Map</h3>
         </div>
 
         {/* Layer selector */}
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 flex-wrap gap-4"> 
           {layers.map((layer) => {
             const Icon = layer.icon;
             return (
